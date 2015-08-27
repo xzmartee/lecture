@@ -8,13 +8,19 @@
     you should use a script to produce this plot, with both the serial
     fraction and the maximum number of cores as parameters.
 
+To be answered.
+
 2.  Suppose a particular program can be partitioned into perfectly
     independent tasks, each of which takes time tau.  Tasks are
     set up, scheduled, and communicated to p workers at a (serial)
     central server; this takes an overhead time alpha per task.
     What is the theoretically achievable throughput (tasks/time)?
 
+To be answered.
+
 3.  Under what circumstances is it best to not tune?
+
+TBA
 
 4.  The class cluster consists of eight nodes and fifteen Xeon Phi
     accelerator boards.  Based on an online search for information on
@@ -24,4 +30,8 @@
     in your calculation.  (We will return to this question again after
     we cover some computer architecture.)
     
+TBA
+
 5.  What is the approximate theoretical peak flop rate for your own machine?
+
+I don’t really know.
