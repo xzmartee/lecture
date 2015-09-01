@@ -11,12 +11,45 @@ with questions for class!
     you computed this, and give URLs for where you got the parameters
     in your calculation.  (We will return to this question again after
     we cover some computer architecture.)
+
+The cluster consists of 8 nodes (each with 12 cores, so 96 cores in total)
+and 15 Xeon Phi 5110P coprocessors.
+
+The peak rate for Xeon Phi 5110P is calculated as:
+
+16 FLOPS/clock cycle/core * 60 cores * 1.053 GHz = 1.01088 TaraFLOPS [1]
+
+For Intel Xeon E5-2620 v3, a resource [2] claims that the theoretical peak 
+performance under Amdahl’s Law is 460.8 GFLOPS. However it should be noted 
+that many factors will affect the peak performance.
+
+So  the total theoretical peak performance would be
+
+96 * 0.4608 TFLOPS + 15 * 1.01088 TFLOPS = 59.4 TFLOPS
+
+Reference:
+[1] http://www.transtec.de/fileadmin/Medien/pdf/HPC/Xeon_Phi/high-performance-xeon-phi-coprocessor-brief-2.pdf
+[2] https://www.pugetsystems.com/labs/articles/Intel-Xeon-E5-v3-Haswell-EP-Buyers-Guide-599/
+
     
 2.  What is the approximate theoretical peak flop rate for your own machine?
+
+My MacBook Pro has a process of 2.5 GHz Intel Core i5. There are two cores. Note really sure
+where to find the peak FLOPS per clock cycle but seemingly it is just 1.
+
+So the peak performance is 2.5 GHz * 2 * 1 = 5 GFLOPS.
+
+Hmm… I probably should get a new laptop.
 
 3.  Suppose there are t tasks that can be executed in a pipeline
     with p stages.  What is the speedup over serial execution of the
     same tasks?
+
+With serial execution the tasks should be done in t * p * c time, where c is the time cost
+per step.
+With pipeline, this number will be (p + (t-1)) * c.
+
+So the speedup is (p+t-1)/pt
 
 4.  Consider the following list of tasks (assume they can't be pipelined):
 
@@ -31,6 +64,11 @@ with questions for class!
     a compiled application?  What is the minimum parallel time given
     an arbitrary number of processors?
 
+The minimum serial time will be 1 + 0.5 + 0.25 + 0.5 + 0.5 = 2.75 hr
+The minimum parallel time is 1 (GCC) + 0.25 (OpenBLAS) + 0.5 (LAPACK) + 0.5 (app) = 2.25 hr
+OpenMPI could be parallely compiled during OpenBLAS and LAPACK being compiled. 
+
+
 5.  Clone the membench repository from GitHub:
 
        git clone git@github.com:cornell-cs5220-f15/membench.git
@@ -43,6 +81,8 @@ with questions for class!
     timings-heat.pdf; what can you tell about the cache architecture
     on your machine from the plot?
 
+Didn’t work… I will have to update my gcc, and potentially instal pandas
+
 6.  From the cloned repository, check out the totient branch:
 
        git checkout totient
@@ -51,6 +91,8 @@ with questions for class!
     If you prefer, you can also look at the files on GitHub.  Either
     way, repeat the exercise of problem 5.  What can you tell about
     the cache architecture of the totient nodes?
+
+Will do later.
 
 7.  Implement the following three methods of computing the centroid
     of a million two-dimensional coordinates (double precision).
