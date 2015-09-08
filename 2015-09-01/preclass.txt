@@ -17,7 +17,7 @@ and 15 Xeon Phi 5110P coprocessors.
 
 The peak rate for Xeon Phi 5110P is calculated as:
 
-16 FLOPS/clock cycle/core * 60 cores * 1.053 GHz = 1.01088 TaraFLOPS [1]
+16 FLOPS/clock cycle/core * 60 cores * 1.053 GHz = 1.01088 TeraFLOPS [1]
 
 For Intel Xeon E5-2620 v3, a resource [2] claims that the theoretical peak 
 performance under Amdahl’s Law is 460.8 GFLOPS. However it should be noted 
@@ -30,6 +30,15 @@ So  the total theoretical peak performance would be
 Reference:
 [1] http://www.transtec.de/fileadmin/Medien/pdf/HPC/Xeon_Phi/high-performance-xeon-phi-coprocessor-brief-2.pdf
 [2] https://www.pugetsystems.com/labs/articles/Intel-Xeon-E5-v3-Haswell-EP-Buyers-Guide-599/
+
+========================
+in-class discussion
+
+Intel Xeon E5-2620 v3 can do 16 GFLOPS/cycle/core, according to the lecture slides.
+
+16 * 13.2 GHz * 96 cores = 2.028 TFLOPS
+
+So the total should be 2.028 + 15 * 1.01088 = 17.19 TFLOPS
 
     
 2.  What is the approximate theoretical peak flop rate for your own machine?
@@ -49,7 +58,7 @@ With serial execution the tasks should be done in t * p * c time, where c is the
 per step.
 With pipeline, this number will be (p + (t-1)) * c.
 
-So the speedup is (p+t-1)/pt
+So the speedup is pt/(p+t-1)
 
 4.  Consider the following list of tasks (assume they can't be pipelined):
 
@@ -83,6 +92,12 @@ OpenMPI could be parallely compiled during OpenBLAS and LAPACK being compiled.
 
 Didn’t work… I will have to update my gcc, and potentially instal pandas
 
+Any edge between two distinguish color patterns signifies a level change 
+in cache. For instance, the level-1 cache is 64 Kb so it’s 2^15, and on the
+graph it can be observed that there is an edge on the 15 level, which means 
+smaller than this size every thing could fit in the level-1 cache, bigger than
+that will sacrifice performance by exchanging data.
+
 6.  From the cloned repository, check out the totient branch:
 
        git checkout totient
@@ -111,3 +126,9 @@ Will do later.
     compiler.  To do this, run "module load cs5220" and run (e.g.)
 
         icc -o centroid centroid.c
+
+
+a c should have the same cost, b should be longer.
+However, based on the optimization level, a could be faster than c when the compiler
+realizes that the code is doing identical jobs or the calculated result is never to be
+used. That’s why the ‘-o’ flag is necessary to set the level to lowest.

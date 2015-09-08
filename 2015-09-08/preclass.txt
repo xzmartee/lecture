@@ -22,15 +22,31 @@ something into an already-full cache.
 the memory-based AI of this code? (Hint: What is the memory-based AI of just the
 innermost loop?)
 
+The total flops of matmul is 2N^3.
+The cache cannot fit two vectors. So all the elements have to be passed in the 
+cache individually, that is 3N^2 elements and each time 4*8 = 32 bytes are passed
+between memory and cache.
+Here 4 is one element from A and one from B (both move in cache) and move-in and move-out
+of one element of C.
+So the AI = 2N^3 / 32 = (N^3)/16
 
 2. Now suppose that the cache is substantially larger than 16N, but
 substantially smaller than 8N^2. What is the AI now?
 
+Total flops = 2N^3
+The cache can fit two vectors. So can pass in vectors instead of individual elements
+to facilitate the computation. There are N vectors in each matrix, so 4N*8 = 32N bytes
+can be passed between cache and memory each time.
+AI = 2N^3 / 32N = (N^2)/16
 
 3. Now suppose the cache is large enough to hold all of A, B, and C. What is the
 AI now? (Hint: Writing to a byte of memory not already in the cache incurs two
 memory transfers: one to move the data to the cache for writing, and one to move
 the written data back to main memory.)
+
+Total flops = 2N^3
+move in of A and B and move-in & move-out of C is 4*N^2*8 = 32N^2 bytes
+AI = 2N^3 / 32N^2 = N/16
 
 
 4. Cache overflowing. On my CPU (Intel i7-4700 HQ), L1, L2, and L3 caches are 32
@@ -38,13 +54,29 @@ KB, 256 KB, and 6 MB respectively. What is the largest problem size N that will
 fit in each cache? What is the arithmetic intensity associated with each problem
 size?
 
+L1: 32*1024 bytes. So the largest problem size will be N = sqrt(1024)=32
+L2: similarly, sqrt(1024*256/32)=90.5, N = 90
+L3: sqrt(6*1024*1024/32)=443.4, N = 443
+
+AI of L1 = 32/16 = 2.0; L2 = 5.63; L3 = 27.7
+
 
 5. My CPU has 4 cores, each of which can do 8 fused multiply-adds per cycle, has
 a clock rate of 2.4 GHz, and a memory bandwidth of 25.6 GB/s. At what arithmetic
 intensity does my machine become CPU-bound?
 
+each multiply-add is 2 flops. So the CPU’s performance is 4*8*2*2.4=153.6 GFlops/s
+memory bandwidth is 25.6 GB/s
+so the CPU-bound AI = 153.6/25.6 = 6 flops/bytes
 
 6. So, for what size range for N will naive matmul be CPU-bound on my machine?
 
+N/16 = 6, N = 96
+
 
 7. So, what will a plot of Flops/sec vs N look like?
+
+First increase as N increase, at the point of CPU bound it becomes a plateau.
+
+=========Reference===========
+http://crd-legacy.lbl.gov/~oliker/papers/blw10_chapter_autotune.pdf
