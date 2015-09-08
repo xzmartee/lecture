@@ -24,20 +24,22 @@ innermost loop?)
 
 The total flops of matmul is 2N^3.
 The cache cannot fit two vectors. So all the elements have to be passed in the 
-cache individually, that is 3N^2 elements and each time 4*8 = 32 bytes are passed
-between memory and cache.
-Here 4 is one element from A and one from B (both move in cache) and move-in and move-out
-of one element of C.
-So the AI = 2N^3 / 32 = (N^3)/16
+cache individually for each element computed in C. Therefore in total there N^3 times
+that one element from A and one from B, so that’s 2N^3*8 = 16N^3 bytes passed.
+
+So the AI = 2N^3 / 16N^3 = 0.125
+—————
+cache cannot accommodate a row. No reuse elements in A or B. So each iteration of the 
+inner loop you read in 2 floating point and do 2 flops. 
+
 
 2. Now suppose that the cache is substantially larger than 16N, but
 substantially smaller than 8N^2. What is the AI now?
 
 Total flops = 2N^3
-The cache can fit two vectors. So can pass in vectors instead of individual elements
-to facilitate the computation. There are N vectors in each matrix, so 4N*8 = 32N bytes
-can be passed between cache and memory each time.
-AI = 2N^3 / 32N = (N^2)/16
+The cache can fit two vectors but cannot fit whole matrices. Rows of A can be reused, so
+only 8N^2 bytes passed in in total. However, columns of B must be passed in for each row of A, and there are N rows in A, so 8N^2*N=8N^3 bytes passed in.
+This AI is twice as great as in (1), AI = 2N^3/8N^3 = 0.25
 
 3. Now suppose the cache is large enough to hold all of A, B, and C. What is the
 AI now? (Hint: Writing to a byte of memory not already in the cache incurs two
@@ -45,8 +47,8 @@ memory transfers: one to move the data to the cache for writing, and one to move
 the written data back to main memory.)
 
 Total flops = 2N^3
-move in of A and B and move-in & move-out of C is 4*N^2*8 = 32N^2 bytes
-AI = 2N^3 / 32N^2 = N/16
+move in of A and B is 2*N^2*8 = 16N^2 bytes
+AI = 2N^3 / 16N^2 = N/8
 
 
 4. Cache overflowing. On my CPU (Intel i7-4700 HQ), L1, L2, and L3 caches are 32
@@ -54,11 +56,17 @@ KB, 256 KB, and 6 MB respectively. What is the largest problem size N that will
 fit in each cache? What is the arithmetic intensity associated with each problem
 size?
 
-L1: 32*1024 bytes. So the largest problem size will be N = sqrt(1024)=32
-L2: similarly, sqrt(1024*256/32)=90.5, N = 90
-L3: sqrt(6*1024*1024/32)=443.4, N = 443
+L1: 32*1024 bytes. So the largest problem size will be N = sqrt(1024*2)=32
+L2: similarly, sqrt(1024*256/16)=90.5, N = 90
+L3: sqrt(6*1024*1024/16)=627, N = 443
 
 AI of L1 = 32/16 = 2.0; L2 = 5.63; L3 = 27.7
+
+————————
+Some potential ideas:
+ (1) Fit in A B and C
+ (2) Fit in A and B only, don’t care about C. Just like the case above.
+ (3) Fit in one line of A and entire B, never to look back at the same row of A again.
 
 
 5. My CPU has 4 cores, each of which can do 8 fused multiply-adds per cycle, has
