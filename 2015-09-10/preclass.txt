@@ -17,3 +17,5 @@
    [Note that dot products have low arithmetic intensity -- the
     roofline model may be useful for reasoning about the peak
     performance for computing pieces of the dot product]
+
+To be added during/after the lecture.
