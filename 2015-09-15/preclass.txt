@@ -5,14 +5,33 @@ the glider pattern for a few generations.
 
 0.  How much time did you spend on this pre-class exercise, and when?
 
+	The night before the Tuesday lecture… Just finished going through
+	the slides took me around an hour. Trying the pre-class probably takes
+	another one.
+
 1.  What are one or two points that you found least clear in the
     9/15 slide decks (including the narration)?
+
+	I think the slides are pretty neat. Narration somehow overlaps
+	with the texts a lot while I was hoping for more detailed explanation
+	rather than simply reading the texts. I would say the first couple
+	of slides got me lost because there were so many new concepts that I
+	had a hard time catching up with, but luckily later on I got them all
+	sorted. Also I have relatively weak background in ODE and PDE, so when
+	introducing the particle systems I got a little puzzled.
 
 2.  In the basic implementation provided, what size board for the Game
     of Life would fit in L3 cache for one of the totient nodes?  Add a
     timer to the code and run on the totient node.  How many cells per
     second can we update for a board that fits in L3 cache?  For a
     board that does not fit?
+
+	It depends on the L3 cache size. If it is 15MB (which I’m still not sure)
+	then it can hold a matrix of bits that has a size of sqrt(15*1024*1024*8)
+	~11200
+
+	Didn’t do the timing task… still not quite sure how to properly submit
+	a task.
 
 3.  Assuming that we want to advance time by several generations,
     suggest a blocking strategy that would improve the operational
@@ -21,10 +40,24 @@ the glider pattern for a few generations.
     want to try your hand at implementing your strategy (though you
     need not spend too much time on it).
 
+	Rough idea:
+	Could perform the boundary cells’ computation first, because it involves
+	communication with neighbor nodes, while waiting for the reply, the current
+	node can compute the inner cells.
+
 4.  Comment on what would be required to parallelize this code
     according to the domain decomposition strategy outlined in the
     slides.  Do you think you would see good speedups on one of
     the totient nodes?  Why or why not?
+
+	Not so sure about the concept of domain decomposition strategy, but if this
+	strategy is applied to the game of life, I would say each boundary would be
+	a subdomain and there is very little adjustment between subdomains. Each sub-
+	domain only need to communicate to one certain other core.
+	In terms of requirement, probably the problem should be decided based off the
+	area (near a boundary) that the cells are in.
+	Probably won’t see speedup on one node because there’s no communication between
+	nodes…
 
 5.  Suppose we want to compute long-range interactions between two
     sets of particles in parallel using the obvious n^2 algorithm in a
@@ -49,3 +82,10 @@ the glider pattern for a few generations.
     Based on what you know about memories and parallel architecture,
     do you see any features of this approach that are likely to lead
     to poor performance?
+
+	When processor p is working, other processor will stand by?
+	Also it seems there’s constant request for retrieving data
+	from the memory. It’s not the best use of caches. There should
+	be a buffer zone in the cache that stores some of the particle+j
+	and allow all particle+i particles done calculation with all of 
+	them.
