@@ -33,6 +33,20 @@ the glider pattern for a few generations.
 	Didn’t do the timing task… still not quite sure how to properly submit
 	a task.
 
+——————
+    In lecture, the accepted answer if sqrt(15*1024*1024) ~ 4000 on each side.
+    It can be observed in the naive approach, another matrix of same size is used
+    to keep the ghost cells (see the code for an impression), so actually one needs
+    to have two matrices in the cache, which makes the size that fits in the cache 
+    reduced to ~2800
+
+    It can be observed that no matter the size is 100 or 4000, the second/cell is
+    always about 3.5e-8. So the memory access (bandwidth) is not the bottle neck 
+    in this code.
+	(This result is obtained by make, or make CC=“icc -openmp -O0”)
+
+    *** Also try make CC=“gcc -fopenmp” ***
+
 3.  Assuming that we want to advance time by several generations,
     suggest a blocking strategy that would improve the operational
     intensity of the basic implementation.  Assume the board is
@@ -58,6 +72,12 @@ the glider pattern for a few generations.
 	area (near a boundary) that the cells are in.
 	Probably won’t see speedup on one node because there’s no communication between
 	nodes…
+
+————————
+    divide the game board into sub-blocks, the neighboring area needs special attention
+    (could be stored in ghost cells).
+    If one layer is defined as neighboring area, you can do one generation without 
+    reading from memory. If there are two layers, you can do two generations. 
 
 5.  Suppose we want to compute long-range interactions between two
     sets of particles in parallel using the obvious n^2 algorithm in a
