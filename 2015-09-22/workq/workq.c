@@ -192,10 +192,8 @@ void workq_finish(workq_t* workq)
 {
     workq_lock(workq);
     workq->done = 1;
-    if (workq->tasks == NULL) {
-    	 workq_broadcast(workq);
+	workq_broadcast(workq);
     	// workq_signal(workq);
-    }
     workq_unlock(workq);
 }
 
