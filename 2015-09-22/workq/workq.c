@@ -176,9 +176,7 @@ void* workq_get(workq_t* workq)
         workq->tasks = task->next;
         free(task);
     }
-    if (workq->tasks == NULL) {
-    	workq_signal(workq);
-    }
+
     workq_unlock(workq);
     return result;
 }
@@ -194,6 +192,10 @@ void workq_finish(workq_t* workq)
 {
     workq_lock(workq);
     workq->done = 1;
+    if (workq->tasks == NULL) {
+    	 workq_broadcast(workq);
+    	// workq_signal(workq);
+    }
     workq_unlock(workq);
 }
 
