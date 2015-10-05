@@ -47,7 +47,12 @@ that you can figure out the numerical jargon.
                          double h, double x, double y)
       {
           /* Estimate the Laplacian applied to u at (x,y) */
-          return (u(x-h,y) - u(x,y))/h + (u(x,y-h) - u(x,y))/h; // by definition?
+        // return (u(x-h,y) - u(x,y))/h + (u(x,y-h) - u(x,y))/h; // by definition?
+
+———
+	// wrong answer.
+	// Laplacian is 2nd-order derivative
+	  return (4*u(x,y)-u(x+h,y)-u(x-h,y)-u(x,y+h)-u(x,y-h))/(h*h);
       }
 
     If you are unfamiliar with the syntax, the first argument to

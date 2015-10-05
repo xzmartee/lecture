@@ -19,14 +19,33 @@
        time per trial (t_trial), and time to update the global
        counters in the critical section (t_update).
 
+———————————
+	vary the batch size and number of trials.
+	determine the serial work and parallel work:
+	serial: time in critical section N*t_update/B.
+	parallel: N*T_trial/P.
+	therefore, T = N/B*t_update + N/P*t_trial
+
+	The model: fix P and vary N and B.
+
+	First run, fix P=24, N=1000000000, B = 10000, 20000, 5000. See the results on
+	totient, mc_class.pbs and corresponding outputs,
+	can be solved:
+	t_update = 3.0627e-07, t_trial = 2.5561e-08
+
     b) Run the code with a few different parameter values in order
        to estimate N, t_trial, and t_update for this code on
        a totient compute node.
+
+————————————
+	See above
 
     c) Based on your model, suggest a strategy for choosing the batch
        size.  How might you generalize this strategy to automatically
        choose batch sizes for different types of computational
        experiments?
+
+	
     
 3.  In the workq subdirectory of this directory, there is a basic work
     queue implementation.  Following the strategy outlined in the
