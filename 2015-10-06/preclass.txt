@@ -22,6 +22,23 @@
        (under /usr/local/intel).  Using this version of MPI and the
        default PBS files, run the pingpong examples (demo/pingpong).
 
+	————
+	Note the architecture of the cluster:
+	8 nodes, 2 chips per node, 6 cores per chip, 2 threads per core.
+	Within a node, cores and chips communicate by shared memory.
+	Between nodes, communication is via ethernet.
+
+	The cycle time of the processor is 10^-9.
+	in the 2-core case, the latency is 10^-6, which means each message
+	wastes 100~1000 cycles.
+	in the 2-chip case, the time per message is about 7x higher than 2-core.
+
+	in the 2-node case, the time per message is no longer proportional to
+	the message size. There are plateau for a range of message size, because
+	the communication on ethernet are in blocks of fixed size, so the time
+	cost is the same regardless of the size of the message in some region.
+	The latency is this example is in the magnitude of 10^-4. 
+
     b) Now do "module load openmpi/1.10.0-icc-15.0.3" after loading
        the CS 5220 module.  Check by typing "which mpicc" that you
        are now using a different version of mpicc.  Compile with
@@ -33,6 +50,13 @@
        flops/cycle), how many (double precision) floating point ops
        could two totient cores do in the minimal time required for one
        MPI message exchange?
+	
+	16 FLOPS/cycle * 2.4 GHz * 12 = 4.608*10^11 FLOPS/sec
+	within a core,
+	4.608e11 * 2.8e-7 /12 = 10752 work to do to cover the loss by message
+	In general, a lot.
 
+	Take-home message is that this is not so great speedup for parallelism.
 
+———————————
 	Cluster is down tonight, unable to run the scripts.
