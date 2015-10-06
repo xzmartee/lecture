@@ -3,6 +3,14 @@
 1.  What are one or two points that you found least clear in the
     10/06 slide decks (including the narration)?
 
+	I spent roughly 2 hours going through all the slides and found
+	most materials not hard to follow. Unfortunately the queue is 
+	down and the code can’t run on my own machine (after all my machine
+	is not equipped with all necessary modules) so I couldn’t better
+	understand to materials by playing with the code myself.
+
+	Look forward to the lecture tomorrow.
+
 2.  In the upcoming lecture (10/8), we will discuss how to model
     latency and bandwidth of MPI sends and receives using the
     ping-pong benchmark briefly described in the current demo.
@@ -25,3 +33,6 @@
        flops/cycle), how many (double precision) floating point ops
        could two totient cores do in the minimal time required for one
        MPI message exchange?
+
+
+	Cluster is down tonight, unable to run the scripts.
